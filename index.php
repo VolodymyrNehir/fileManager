@@ -65,7 +65,44 @@
 
 
 <script>
-    
+    $(function () {
+        $('.formAddFile').on('submit',function (even) {
+            even.preventDefault()
+
+            let formFile = $('#formFile');
+            let form = formFile[0].files[0]
+            console.log(form);
+
+            let typesFile =['application/zip', 'image/jpeg','image/jpg','image/gif'];
+
+            if (!typesFile.includes(form.type)) {
+                alert('bad file');
+                form = [];
+            } else {
+                alert('good file')
+            }
+            console.log(form);
+
+
+
+        })
+
+        $('.fileDirect').on('click', function (even) {
+            if (!even.target.closest('i')) {
+                $('.containerFile').html(`
+               <div class="file">
+                <i class="bi bi-file-earmark"></i>
+                <span>file</span>
+                <button class="deleteFile btnIcon">
+                    <i class="bi bi-trash-fill"></i>
+                </button>
+            </div>
+                `)
+            }
+
+        })
+    })
+
 </script>
 </body>
 </html>
