@@ -53,6 +53,7 @@
 
 </div>
 <?php require 'ModelWindow.php' ?>
+<?php require 'fileManager.php'?>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.min.js"
         integrity="sha384-7VPbUDkoPSGFnVtYi0QogXtr74QeVeeIs99Qfg5YCF+TidwNdjvaKZX19NZ/e6oz"
         crossorigin="anonymous"></script>
@@ -69,9 +70,9 @@
         $('.formAddFile').on('submit',function (even) {
             even.preventDefault()
 
-            let formFile = $('#formFile');
+            let formFile = $('#fileInput');
             let form = formFile[0].files[0]
-            console.log(form);
+            console.log(this);
 
             let typesFile =['application/zip', 'image/jpeg','image/jpg','image/gif'];
 
@@ -81,8 +82,32 @@
             } else {
                 alert('good file')
             }
-            console.log(form);
+let formData = new FormData(this);
 
+            $.ajax({
+                type: "POST",
+                url: "fileManager.php",
+                data: formData,
+                processData: false,
+                contentType: false,
+                xhr: function() {
+const xhr = new XMLHttpRequest();
+xhr.upload.onprogress = function (event) {
+   if (event.lengthComputable) {
+       let progress = (event.loaded / event.total) * 100;
+       console.log(progress);
+       $('.progress-bar').css('width', progress.toFixed() + '%')
+   }
+}
+
+                    return xhr;
+$('#exampleModal').modal('hide')
+                },
+                success: function(response) {
+                    $('.progress-bar').css('width', '0%')
+                    console.log(response);
+                }
+            });
 
 
         })
@@ -99,6 +124,8 @@
             </div>
                 `)
             }
+
+
 
         })
     })
