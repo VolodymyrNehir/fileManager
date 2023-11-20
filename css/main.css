@@ -1,0 +1,82 @@
+.fileDirect:hover {
+    font-weight: bold;
+    color: red;
+    background: rgba(202, 196, 196, 0.5);
+
+}
+
+.active {
+    font-weight: bold;
+    color: red;
+    background: rgba(202, 196, 196, 0.5);
+}
+
+.folder {
+    cursor: default;
+    border-bottom: silver solid 1px;
+}
+
+.btnAdd:hover {
+    color: green;
+    cursor: pointer;
+}
+
+.file {
+    border-bottom: silver solid 1px;
+    cursor: default;
+}
+
+.file:hover {
+    background: rgba(202, 196, 196, 0.5);
+}
+
+.deleteFileBtn:hover {
+    color: red;
+    cursor: pointer;
+}
+
+.btnIcon {
+    background: none;
+    border: 0;
+}
+
+.progress {
+
+    display: none;
+}
+
+.abortColl {
+    display: none;
+}
+
+.error {
+    margin: auto;
+    color: red;
+    display: none;
+}
+
+.pagination {
+    color: silver;
+}
+
+ .page-link:focus {
+    box-shadow: none;
+}
+.page-item a {
+    color: black;
+}
+.deleteModel {
+    display: none;
+}
+
+
+
+.pagination .befClick {
+background: #0d6efd;
+color: #fff;
+}
+
+.pagination li a{
+background: #fff;
+color: #111;
+}
