@@ -3,8 +3,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_POST['directId']) && isset($_POST['nameFile'])) {
         $directId = $_POST['directId'];
         $nameFile = $_POST['nameFile'];
-        $dir = "uploads/$directId/$nameFile";
-        $uploadDirectory = "uploads/$directId/";
+        $dir = "../uploads/$directId/$nameFile";
+        $uploadDirectory = "../uploads/$directId/";
 
         $dirContents = scandir($uploadDirectory);
 

@@ -1,7 +1,7 @@
 <?php
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['direction'])) {
     $direct = $_POST['direction'];
-    $uploadDirectory = "uploads/$direct/";
+    $uploadDirectory = "../uploads/$direct/";
     if (is_dir($uploadDirectory)) {
         $filesPerPage = 10;
         $currentPage = isset($_POST['page']) ? $_POST['page'] : 1;
