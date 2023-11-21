@@ -78,9 +78,11 @@ $(document).on('submit', '.formAddFile', function (event) {
                     $('.abortColl').css('display', 'none');
 
                 } else {
+                    $('.modal-title').text('Progres');
                     if (currentChunk < totalChunks - 1) {
                         currentChunk++;
                         uploadChunk();
+
                     }
                     if (response.message == 'File uploaded successfully') {
                         $('.progress').css('display', 'none');
@@ -99,13 +101,13 @@ $(document).on('submit', '.formAddFile', function (event) {
 
                     }
 
-                    if (!response.status) {
-                        $('.error').css('display', 'block')
-                        $('.modal-title').text('Error');
-                        $('.error').text(response.error);
-                        $("#exampleModal").modal("show");
-
-                    }
+                    // if (!response.status) {
+                    //     $('.error').css('display', 'block')
+                    //     $('.modal-title').text('Error');
+                    //     $('.error').text(response.error);
+                    //     $("#exampleModal").modal("show");
+                    //
+                    // }
                 }
 
 
@@ -120,7 +122,7 @@ $(document).on('click','.btnAdd', function () {
     $('.formInpuFile').val('');
     $('.sendModel').css('display', 'flex');
     $('.error').css('display', 'none')
-    $('.modal-title').text('Modal title');
+    $('.modal-title').text('Add file');
     $('.deleteModel').css('display','none');
     $(".formAddFile").css("display", 'block');
 

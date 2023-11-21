@@ -29,10 +29,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             fopen($filePath, 'ab');
 
-            fwrite($filePath, $file['tmp_name']);
+        file_put_contents($filePath, $chunk, FILE_APPEND);
 
-            fclose($filePath);
-            $chunk = json_decode($chunkData);
 
             if ($chunkData->currentChunk == $chunkData->totalChunks - 1) {
                 header('Content-Type: application/json');
@@ -43,7 +41,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 header('Content-Type: application/json');
                 echo json_encode(['status' => false,
                     'error' => 'An error occurred while uploading the file']);
+            }  else {
+                header('Content-Type: application/json');
+                echo json_encode(['status' => true]);
             }
+
+        fclose($filePath);
 
     } else {
         header('Content-Type: application/json');
