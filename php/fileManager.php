@@ -15,7 +15,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 ]
             ));
         }
-            $chunk = file_get_contents($_FILES['file']['tmp_name']);
+        if ($chunkData->currentChunk == 0) {
+            $files =  scandir("../uploads/$direct");
+            foreach ($files as $file) {
+                if ($file == $name) {
+                    header('Content-Type: application/json');
+                    echo json_encode(['status' => false, 'message' => 'The file exists, do you want to replace it?']);
+
+                }
+            }
+        }
+
+        $chunk = file_get_contents($_FILES['file']['tmp_name']);
 
             $uploadDirectory = "../uploads/$direct";
 
@@ -31,20 +42,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         file_put_contents($filePath, $chunk, FILE_APPEND);
 
-
             if ($chunkData->currentChunk == $chunkData->totalChunks - 1) {
                 header('Content-Type: application/json');
                 echo json_encode(['status' => true, 'message' => 'File uploaded successfully'
                     ]
                 );
-            } else if (!move_uploaded_file($file["tmp_name"], $filePath)) {
-                header('Content-Type: application/json');
-                echo json_encode(['status' => false,
-                    'error' => 'An error occurred while uploading the file']);
-            }  else {
-                header('Content-Type: application/json');
-                echo json_encode(['status' => true]);
             }
+//            else if (!move_uploaded_file($file["tmp_name"], $filePath)) {
+//                header('Content-Type: application/json');
+//                echo json_encode(['status' => false,
+//                    'error' => 'An error occurred while uploading the file']);
+//            }  else {
+//                header('Content-Type: application/json');
+//                echo json_encode(['status' => true]);
+//            }
 
         fclose($filePath);
 
