@@ -5,30 +5,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $direct = $_POST['direction'];
         $file = $_FILES["file"];
         $name = $_POST["name"];
-        $fileType = $_POST['fileType'];
+//        $fileType = $_POST['fileType'];
         $typesFile = ['application/zip', 'image/jpeg', 'image/jpg', 'image/gif'];
-        if (!in_array($fileType, $typesFile)) {
-            header('Content-Type: application/json');
-            exit(json_encode([
-                    'status' => false,
-                    'error' => 'Invalid format'
-                ]
-            ));
-        }
-        if ($chunkData->currentChunk == 0) {
-            $files =  scandir("../uploads/$direct");
-            foreach ($files as $file) {
-                if ($file == $name) {
-                    header('Content-Type: application/json');
-                    echo json_encode(['status' => false, 'message' => 'The file exists, do you want to replace it?']);
+        $finfo = new finfo(FILEINFO_MIME_TYPE);
+       $typeFile = $finfo->file($_FILES['file']['tmp_name']);
+       if ($chunkData->currentChunk == 0) {
+           if (!in_array($typeFile, $typesFile)) {
+               header('Content-Type: application/json');
+               exit(json_encode([
+                       'status' => false,
+                       'error' => 'Invalid format'
+                   ]
+               ));
+           }
+       }
 
-                }
-            }
-        }
 
         $chunk = file_get_contents($_FILES['file']['tmp_name']);
 
             $uploadDirectory = "../uploads/$direct";
+
 
             if (!is_dir($uploadDirectory)) {
                 mkdir($uploadDirectory, 0755, true);
@@ -39,8 +35,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $filePath = $uploadDirectory . '/' . basename($name);
 
             fopen($filePath, 'ab');
+        if (file_exists("../uploads/$direct/".basename($name)) && $chunkData->currentChunk == 0) {
+            file_put_contents($filePath, $chunk);
+            } else {
+            file_put_contents($filePath, $chunk, FILE_APPEND);
+        }
 
-        file_put_contents($filePath, $chunk, FILE_APPEND);
+
 
             if ($chunkData->currentChunk == $chunkData->totalChunks - 1) {
                 header('Content-Type: application/json');

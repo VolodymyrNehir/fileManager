@@ -12,12 +12,13 @@
                         <label for="formFile" class="form-label">Add file</label>
                         <input class="formInpuFile form-control" type="file" accept="application/zip, image/jpeg, image/jpg, image/gif" name="file" id="fileInput">
                         <p class="error">Error</p>
-                        <div class="modal-footer">
+                        <div class="modal-footer submitBtn">
                             <input type="submit" class="btn btn-primary addFile">
                         </div>
-
                     </form>
 
+                </div>
+                <div class="modal-footer repiteFileBtn">
                 </div>
                 <div class="progress">
                     <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-label="Animated striped example" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" ></div>

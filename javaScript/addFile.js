@@ -20,138 +20,148 @@ $(document).on('submit', '.formAddFile', function (event) {
         $('.error').text('Invalid format');
         return
     } else {
-    }
 
-    const chunkSize = 1024 * 1024;
 
-    const totalChunks = Math.ceil(form.size / chunkSize);
+        const chunkSize = 1024 * 1024;
 
-    let currentChunk = 0;
+        const totalChunks = Math.ceil(form.size / chunkSize);
 
-    const uploadChunk = function () {
-        const start = currentChunk * chunkSize;
-        const end = Math.min((currentChunk + 1) * chunkSize, form.size);
+        let currentChunk = 0;
 
-        const chunk = form.slice(start, end);
-        let formData = new FormData();
-        $('.progress').css('display', 'flex');
-        formData.append("direction", directId);
-        formData.append("fileType", form.type);
-        formData.append('file', chunk);
-        formData.append('name', form.name);
-        formData.append('chunkData', JSON.stringify({currentChunk, totalChunks}));
-        let tol = Math.ceil(100 / (totalChunks))
-        $('.progress-bar').css('width', currentChunk * tol + '%')
+        const xhr = new XMLHttpRequest();
 
-        $.ajax({
-            type: "POST",
-            url: "php/fileManager.php",
-            data: formData,
-            processData: false,
-            contentType: false,
-            xhr: function () {
-                const xhr = new XMLHttpRequest();
-                $('.abortColl').css('display', 'block');
+        xhr.open('HEAD', `uploads/${directId}/${form.name}`, true);
 
-                $('.abortColl').on('click', function () {
-                    xhr.abort();
-                    $("#exampleModal").modal("hide")
-                    $('.abortColl').css('display', 'none');
-                    $('.progress').css('display', 'none');
-                    $('.progress-bar').css('width', '0%')
+        xhr.onreadystatechange = function () {
 
+            if (xhr.readyState === 4 && xhr.status === 200 && currentChunk == 0) {
+                $('.error').css('display', 'block').text('The file exists, do you want to replace it?');
+                $('.addFile').css('display', 'none');
+                $('.formInpuFile').css('display', 'none');
+                $(".formAddFile").css("display", 'block')
+                $('.progress').css('display', 'none');
+                $('.abortColl').css('display', 'none');
+                $('.repiteFileBtn').css('display', 'block');
+                $('.repiteFileBtn').html("<button class='btn btn-primary repitFile' value='true'>Yes</button> " +
+                    "<button class='btn btn-danger repitFile' value='false'>No</button>"
+                );
+                $('.repitFile').on('click', function (event) {
+                    if (event.target.value == 'true') {
+
+                        $('.repiteFileBtn').css('display', 'none');
+                        $('.modal-title').text('Progres');
+                        uploadChunk();
+
+                    } else if (event.target.value == 'false') {
+                        ++currentChunk;
+                        xhr.abort();
+                        $('.addFile').css('display', 'block');
+                        $('.formInpuFile').css('display', 'block');
+                        $('.error').css('display', 'none')
+                        $('.repiteFileBtn').css('display', 'none');
+                        $("#exampleModal").modal("show");
+
+
+                    }
 
                 })
+            } else if (xhr.status !== 200) {
+                uploadChunk()
+
+            }
+        };
+
+        xhr.send();
 
 
-                return xhr;
-            },
+        const uploadChunk = function () {
+            const start = currentChunk * chunkSize;
+            const end = Math.min((currentChunk + 1) * chunkSize, form.size);
 
-            success: function (response) {
-                console.log('ppppppp')
+            const chunk = form.slice(start, end);
+            let formData = new FormData();
+            $('.progress').css('display', 'flex');
+            formData.append("direction", directId);
+            formData.append("fileType", form.type);
+            formData.append('file', chunk);
+            formData.append('name', form.name);
+            formData.append('chunkData', JSON.stringify({currentChunk, totalChunks}));
+            let tol = Math.ceil(100 / (totalChunks))
+            $('.progress-bar').css('width', currentChunk * tol + '%')
 
-                if (response?.message == 'The file exists, do you want to replace it?') {
-                    $('.error').css('display', 'block').text(response.message);
-                    $('.addFile').css('display', 'none');
-                    $('.formInpuFile').css('display', 'none');
-                    $(".formAddFile").css("display", 'block')
-                    $('.progress').css('display', 'none');
-                    $('.abortColl').css('display', 'none');
-                    $('.modal-footer').prepend("<button class='btn btn-primary repitFile' value='true'>Yes</button>");
-                    $('.modal-footer').append("<button class='btn btn-danger repitFile' value='false'>No</button>");
-                    $('.repitFile').on('click', function (event) {
-                        if (event.target.value == 'true') {
+            $.ajax({
+                type: "POST",
+                url: "php/fileManager.php",
 
+                data: formData,
+                processData: false,
+                contentType: false,
+                xhr: function () {
+                    const xhr = new XMLHttpRequest();
 
-                            $('.modal-title').text('Progres');
-                                currentChunk++;
-                                uploadChunk();
+                    $('.abortColl').css('display', 'block');
 
-                        } else if (event.target.value == 'false') {
-                            currentChunk++;
-                            $('.addFile').css('display', 'block');
-                            $('.formInpuFile').css('display', 'block');
-                            $('.repitFile').remove();
-                            $("#exampleModal").modal("show")
+                    $('.abortColl').on('click', function () {
+                        xhr.abort();
+                        $("#exampleModal").modal("hide")
+                        $('.abortColl').css('display', 'none');
+                        $('.progress').css('display', 'none');
+                        $('.progress-bar').css('width', '0%')
 
-                            return;
-                        }
 
                     })
 
-                } else if (response?.status == false) {
 
-                    $(".formAddFile").css("display", 'block')
-                    $('.error').css('display', 'block')
-                    $("#exampleModal").modal("show")
-                    $('.modal-title').text('Error');
-                    $('.error').text(response?.error);
-                    $('.progress').css('display', 'none');
-                    $('.progress-bar').css('width', '0');
-                    $('.abortColl').css('display', 'none');
+                    return xhr;
+                },
 
-                } else {
-                    $('.modal-title').text('Progres');
-                    if (currentChunk < totalChunks - 1) {
-                        currentChunk++;
-                        uploadChunk();
-                        $('.repitFile').css('display', 'none');
-                        $('.error').css('display', 'none');
+                success: function (response) {
 
-                    }
-                    if (response.message == 'File uploaded successfully') {
+                    if (response?.status == false) {
+
+                        $(".formAddFile").css("display", 'block')
+                        $('.error').css('display', 'block')
+                        $("#exampleModal").modal("show")
+                        $('.modal-title').text('Error');
+                        $('.error').text(response?.error);
                         $('.progress').css('display', 'none');
+                        $('.progress-bar').css('width', '0');
                         $('.abortColl').css('display', 'none');
-                        $('.progress-bar').css('width', '0%')
-                        $("#exampleModal").modal("hide")
-                        $('.formInpuFile').val('');
-                        if ($('.containerFiles .file').length == 0 && $('.befClick').text() < 2) {
-                            $(`#${directId}`).click();
 
-                        } else {
-                            retrieveFiles(directId, parseInt($('.befClick').click().text()), parseInt($('.pagination li .page')[0]?.innerText));
+                    } else {
+                        $('.modal-title').text('Progres');
+                        if (currentChunk < totalChunks - 1) {
+                            currentChunk++;
+                            $('.error').css('display', 'none');
+                            $('.repiteFileBtn').css('display', 'none');
+                            uploadChunk();
 
+                        }
+                        if (response.message == 'File uploaded successfully') {
+                            $('.progress').css('display', 'none');
+                            $('.abortColl').css('display', 'none');
+                            $('.progress-bar').css('width', '0%')
+                            $("#exampleModal").modal("hide")
+                            $('.formInpuFile').val('');
+                            if ($('.containerFiles .file').length == 0 && $('.befClick').text() < 2) {
+                                $(`#${directId}`).click();
+
+                            } else {
+                                retrieveFiles(directId, parseInt($('.befClick').click().text()), parseInt($('.pagination li .page')[0]?.innerText));
+
+
+                            }
 
                         }
 
                     }
 
-                    // if (!response.status) {
-                    //     $('.error').css('display', 'block')
-                    //     $('.modal-title').text('Error');
-                    //     $('.error').text(response.error);
-                    //     $("#exampleModal").modal("show");
-                    //
-                    // }
+
                 }
+            });
+        }
 
-
-            }
-        });
     }
-
-    uploadChunk();
-
 })
 $(document).on('click', '.btnAdd', function () {
     $('.formInpuFile').css('display', 'block').val('');
@@ -161,5 +171,5 @@ $(document).on('click', '.btnAdd', function () {
     $('.deleteModel').css('display', 'none');
     $(".formAddFile").css("display", 'block');
     $('.addFile').css('display', 'block');
-
+    $('.repiteFileBtn').css('display', 'none');
 })

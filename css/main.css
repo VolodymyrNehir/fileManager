@@ -80,3 +80,7 @@ color: #fff;
 background: #fff;
 color: #111;
 }
+
+.repiteFileBtn {
+    display: none;
+}
