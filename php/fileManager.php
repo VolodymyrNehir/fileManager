@@ -5,7 +5,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $direct = $_POST['direction'];
         $file = $_FILES["file"];
         $name = $_POST["name"];
-//        $fileType = $_POST['fileType'];
         $typesFile = ['application/zip', 'image/jpeg', 'image/jpg', 'image/gif'];
         $finfo = new finfo(FILEINFO_MIME_TYPE);
        $typeFile = $finfo->file($_FILES['file']['tmp_name']);
@@ -49,14 +48,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     ]
                 );
             }
-//            else if (!move_uploaded_file($file["tmp_name"], $filePath)) {
-//                header('Content-Type: application/json');
-//                echo json_encode(['status' => false,
-//                    'error' => 'An error occurred while uploading the file']);
-//            }  else {
-//                header('Content-Type: application/json');
-//                echo json_encode(['status' => true]);
-//            }
+
 
         fclose($filePath);
 
