@@ -82,7 +82,7 @@ $(document).on('submit', '.formAddFile', function (event) {
             let formData = new FormData();
             $('.progress').css('display', 'flex');
             formData.append("direction", directId);
-            formData.append("fileType", form.type);
+            // formData.append("fileType", form.type);
             formData.append('file', chunk);
             formData.append('name', form.name);
             formData.append('chunkData', JSON.stringify({currentChunk, totalChunks}));
@@ -127,7 +127,6 @@ $(document).on('submit', '.formAddFile', function (event) {
                         $('.progress').css('display', 'none');
                         $('.progress-bar').css('width', '0');
                         $('.abortColl').css('display', 'none');
-
                     } else {
                         $('.modal-title').text('Progres');
                         if (currentChunk < totalChunks - 1) {
@@ -135,7 +134,6 @@ $(document).on('submit', '.formAddFile', function (event) {
                             $('.error').css('display', 'none');
                             $('.repiteFileBtn').css('display', 'none');
                             uploadChunk();
-
                         }
                         if (response.message == 'File uploaded successfully') {
                             $('.progress').css('display', 'none');

@@ -8,7 +8,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $typesFile = ['application/zip', 'image/jpeg', 'image/jpg', 'image/gif'];
         $finfo = new finfo(FILEINFO_MIME_TYPE);
        $typeFile = $finfo->file($_FILES['file']['tmp_name']);
-       if ($chunkData->currentChunk == 0) {
+       $nameAndType = substr_replace(basename($name),'',strrpos(basename($name),'.')) . '.' . substr($typeFile, strpos($typeFile,'/') +1 )  ;
+        session_start();
+
+
+        if ($chunkData->currentChunk == 0) {
+
+            $_SESSION['nameAndType'] = $nameAndType;
+
+        }
+        if ($chunkData->currentChunk == 0) {
            if (!in_array($typeFile, $typesFile)) {
                header('Content-Type: application/json');
                exit(json_encode([
@@ -29,20 +38,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 mkdir($uploadDirectory, 0755, true);
             }
 
-            $filename = $name;
 
-            $filePath = $uploadDirectory . '/' . basename($name);
 
-            fopen($filePath, 'ab');
-        if (file_exists("../uploads/$direct/".basename($name)) && $chunkData->currentChunk == 0) {
+        fopen($_SESSION['filePath'], 'ab');
+        $filePath = $uploadDirectory . '/' .  $_SESSION['nameAndType'];
+        fopen($filePath, 'ab');
+
+
+        if (file_exists("../uploads/$direct/". $_SESSION['nameAndType']) && $chunkData->currentChunk == 0) {
             file_put_contents($filePath, $chunk);
-            } else {
+        } else if (!file_exists("../uploads/$direct/". $_SESSION['nameAndType'])&& $chunkData->currentChunk == 0) {
+            file_put_contents("../uploads/$direct/". $_SESSION['nameAndType'], $chunk);
+        } else {
             file_put_contents($filePath, $chunk, FILE_APPEND);
         }
 
 
 
+
+        fclose("../uploads/$direct/". $_SESSION['nameAndType']);
+
             if ($chunkData->currentChunk == $chunkData->totalChunks - 1) {
+
+
+                unset($_SESSION['filePath']);
                 header('Content-Type: application/json');
                 echo json_encode(['status' => true, 'message' => 'File uploaded successfully'
                     ]
@@ -50,7 +69,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
 
 
-        fclose($filePath);
 
     } else {
         header('Content-Type: application/json');
