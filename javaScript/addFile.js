@@ -41,14 +41,14 @@ $(document).on('submit', '.formAddFile', function (event) {
                 $(".formAddFile").css("display", 'block')
                 $('.progress').css('display', 'none');
                 $('.abortColl').css('display', 'none');
-                $('.repiteFileBtn').css('display', 'block');
-                $('.repiteFileBtn').html("<button class='btn btn-primary repitFile' value='true'>Yes</button> " +
+                $('.replaceFileBtn').css('display', 'block');
+                $('.replaceFileBtn').html("<button class='btn btn-primary replaceFile' value='true'>Yes</button> " +
                     "<button class='btn btn-danger repitFile' value='false'>No</button>"
                 );
-                $('.repitFile').on('click', function (event) {
+                $('.replaceFile').on('click', function (event) {
                     if (event.target.value == 'true') {
 
-                        $('.repiteFileBtn').css('display', 'none');
+                        $('.replaceFileBtn').css('display', 'none');
                         $('.modal-title').text('Progres');
                         uploadChunk();
 
@@ -58,7 +58,7 @@ $(document).on('submit', '.formAddFile', function (event) {
                         $('.addFile').css('display', 'block');
                         $('.formInpuFile').css('display', 'block');
                         $('.error').css('display', 'none')
-                        $('.repiteFileBtn').css('display', 'none');
+                        $('.replaceFileBtn').css('display', 'none');
                         $("#exampleModal").modal("show");
 
 
@@ -82,7 +82,7 @@ $(document).on('submit', '.formAddFile', function (event) {
             let formData = new FormData();
             $('.progress').css('display', 'flex');
             formData.append("direction", directId);
-            // formData.append("fileType", form.type);
+            formData.append("fileType", form.type);
             formData.append('file', chunk);
             formData.append('name', form.name);
             formData.append('chunkData', JSON.stringify({currentChunk, totalChunks}));
@@ -92,7 +92,6 @@ $(document).on('submit', '.formAddFile', function (event) {
             $.ajax({
                 type: "POST",
                 url: "php/fileManager.php",
-
                 data: formData,
                 processData: false,
                 contentType: false,
@@ -169,5 +168,5 @@ $(document).on('click', '.btnAdd', function () {
     $('.deleteModel').css('display', 'none');
     $(".formAddFile").css("display", 'block');
     $('.addFile').css('display', 'block');
-    $('.repiteFileBtn').css('display', 'none');
+    $('.replaceFileBtn').css('display', 'none');
 })

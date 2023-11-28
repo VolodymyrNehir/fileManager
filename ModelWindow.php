@@ -18,7 +18,7 @@
                     </form>
 
                 </div>
-                <div class="modal-footer repiteFileBtn">
+                <div class="modal-footer replaceFileBtn">
                 </div>
                 <div class="progress">
                     <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-label="Animated striped example" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" ></div>

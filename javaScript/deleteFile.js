@@ -4,6 +4,7 @@ $(document).on('click', '.deleteFileBtn', function (event) {
     const nameFile = $(this).closest('div').find('span').text();
     const directId = $(this).closest('div').attr('directId');
     const modalTitle = $("#exampleModal .modal-title");
+    $('.replaceFileBtn').css('display', 'none');
 
     modalTitle.text('Delete file');
     $('.sendModel').css('display', 'none');
