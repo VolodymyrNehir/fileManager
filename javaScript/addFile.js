@@ -28,57 +28,17 @@ $(document).on('submit', '.formAddFile', function (event) {
 
         let currentChunk = 0;
 
-        const xhr = new XMLHttpRequest();
 
-        xhr.open('HEAD', `uploads/${directId}/${form.name}`, true);
-
-        xhr.onreadystatechange = function () {
-
-            if (xhr.readyState === 4 && xhr.status === 200 && currentChunk == 0) {
-                $('.error').css('display', 'block').text('The file exists, do you want to replace it?');
-                $('.addFile').css('display', 'none');
-                $('.formInpuFile').css('display', 'none');
-                $(".formAddFile").css("display", 'block')
-                $('.progress').css('display', 'none');
-                $('.abortColl').css('display', 'none');
-                $('.replaceFileBtn').css('display', 'block');
-                $('.replaceFileBtn').html("<button class='btn btn-primary replaceFile' value='true'>Yes</button> " +
-                    "<button class='btn btn-danger repitFile' value='false'>No</button>"
-                );
-                $('.replaceFile').on('click', function (event) {
-                    if (event.target.value == 'true') {
-
-                        $('.replaceFileBtn').css('display', 'none');
-                        $('.modal-title').text('Progres');
-                        uploadChunk();
-
-                    } else if (event.target.value == 'false') {
-                        ++currentChunk;
-                        xhr.abort();
-                        $('.addFile').css('display', 'block');
-                        $('.formInpuFile').css('display', 'block');
-                        $('.error').css('display', 'none')
-                        $('.replaceFileBtn').css('display', 'none');
-                        $("#exampleModal").modal("show");
-
-
-                    }
-
-                })
-            } else if (xhr.status !== 200) {
-                uploadChunk()
-
-            }
-        };
-
-        xhr.send();
 
 
         const uploadChunk = function () {
-            const start = currentChunk * chunkSize;
-            const end = Math.min((currentChunk + 1) * chunkSize, form.size);
+            const start = (currentChunk -1) * chunkSize;
+            const end = Math.min((currentChunk) * chunkSize, form.size);
+          let  chunk = form.slice(start, end);
+if (currentChunk == 0) {
+    chunk = form.slice(0, 1000);
 
-            const chunk = form.slice(start, end);
+}
             let formData = new FormData();
             $('.progress').css('display', 'flex');
             formData.append("direction", directId);
@@ -117,7 +77,38 @@ $(document).on('submit', '.formAddFile', function (event) {
                 success: function (response) {
 
                     if (response?.status == false) {
+if (response?.message =='The file exists, do you want to replace it?') {
+    $('.error').css('display', 'block').text('The file exists, do you want to replace it?');
+    $('.addFile').css('display', 'none');
+    $('.formInpuFile').css('display', 'none');
+    $(".formAddFile").css("display", 'block')
+    $('.progress').css('display', 'none');
+    $('.abortColl').css('display', 'none');
+    $('.replaceFileBtn').css('display', 'block');
+    $('.replaceFileBtn').html("<button class='btn btn-primary replaceFile' value='true'>Yes</button> " +
+        "<button class='btn btn-danger replaceFile' value='false'>No</button>"
+    );
+    $('.replaceFile').on('click', function (event) {
+        if (event.target.value == 'true') {
 
+            $('.replaceFileBtn').css('display', 'none');
+            $('.modal-title').text('Progres');
+            ++currentChunk;
+            uploadChunk();
+
+        }  if (event.target.value == 'false') {
+            ++currentChunk;
+            $('.addFile').css('display', 'block');
+            $('.formInpuFile').css('display', 'block');
+            $('.error').css('display', 'none')
+            $('.replaceFileBtn').css('display', 'none');
+            $("#exampleModal").modal("show");
+
+        }
+
+    })
+
+                    }
                         $(".formAddFile").css("display", 'block')
                         $('.error').css('display', 'block')
                         $("#exampleModal").modal("show")
@@ -128,10 +119,11 @@ $(document).on('submit', '.formAddFile', function (event) {
                         $('.abortColl').css('display', 'none');
                     } else {
                         $('.modal-title').text('Progres');
-                        if (currentChunk < totalChunks - 1) {
+                        if (currentChunk < totalChunks) {
                             currentChunk++;
                             $('.error').css('display', 'none');
                             $('.repiteFileBtn').css('display', 'none');
+
                             uploadChunk();
                         }
                         if (response.message == 'File uploaded successfully') {
@@ -157,6 +149,8 @@ $(document).on('submit', '.formAddFile', function (event) {
                 }
             });
         }
+
+        uploadChunk();
 
     }
 })

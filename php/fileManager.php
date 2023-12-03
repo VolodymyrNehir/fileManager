@@ -3,7 +3,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_FILES["file"])) {
         $chunkData = json_decode($_POST['chunkData']);
         $direct = $_POST['direction'];
-        $fileType = $_POST['fileType'];
+//        $fileType = $_POST['fileType'];
         $file = $_FILES["file"];
         $name = $_POST["name"];
         $typesFile = ['application/zip', 'image/jpeg', 'image/jpg', 'image/gif'];
@@ -51,11 +51,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         fopen($filePath, 'ab');
 
 
-        if (file_exists("../uploads/$direct/". $_SESSION['nameAndType']) && $chunkData->currentChunk == 0) {
+        if (file_exists("../uploads/$direct/". $_SESSION['nameAndType']) && $chunkData->currentChunk == 1) {
             file_put_contents($filePath, $chunk);
-        } else if (!file_exists("../uploads/$direct/". $_SESSION['nameAndType'])&& $chunkData->currentChunk == 0) {
+        } else if (!file_exists("../uploads/$direct/". $_SESSION['nameAndType'])&& $chunkData->currentChunk == 1) {
             file_put_contents("../uploads/$direct/". $_SESSION['nameAndType'], $chunk);
-        } else {
+        } else if ($chunkData->currentChunk >= 1){
             file_put_contents($filePath, $chunk, FILE_APPEND);
         }
 
@@ -64,7 +64,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         fclose("../uploads/$direct/". $_SESSION['nameAndType']);
 
-        if ($chunkData->currentChunk == $chunkData->totalChunks - 1) {
+        if ($chunkData->currentChunk == $chunkData->totalChunks  ) {
 
 
             unset($_SESSION['filePath']);
@@ -84,6 +84,3 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
 ?>
-
-
-
