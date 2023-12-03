@@ -48,7 +48,6 @@ export function pagination(idDirect, dirContentsCount) {
             dataType: 'json',
             success: function (response) {
                 if (response.length !== 0) {
-                    console.log(response.length);
                     loadPagination(response[0]?.dirContentsCount, parseInt($('.pagination li .page')[0]?.innerText,10), page);
                     displayData(response);
                 }

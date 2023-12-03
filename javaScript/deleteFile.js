@@ -23,6 +23,7 @@ $(document).on('click', '.btnDeleteFileYes', function () {
     const nameFile =$('#exampleModal').data('nameFile');
     const directId = $('#exampleModal').data('directId');
     const event = $('#exampleModal').data('event');
+    const befClick = $('.befClick');
     $.ajax({
         type: 'POST',
         url: 'php/deleteFile.php',
@@ -36,15 +37,15 @@ $(document).on('click', '.btnDeleteFileYes', function () {
             if ($('.containerFiles .file').length == 0){
 
 
-                let li = $('.befClick').parent().prev('li')
-                $('.befClick').remove();
+                let li = befClick.parent().prev('li')
+                befClick.remove();
                 li.find('a').addClass('befClick').click();
 
-                retrieveFiles(directId,parseInt($('.befClick').text()),parseInt($('.pagination li .page')[0]?.innerText,10))
+                retrieveFiles(directId,parseInt(befClick.text()),parseInt($('.pagination li .page')[0]?.innerText,10))
 
             } else {
 
-                retrieveFiles(directId,parseInt($('.befClick').text(),10),$('.page')[0]?.innerText)
+                retrieveFiles(directId,parseInt(befClick.text(),10),$('.page')[0]?.innerText)
             }
 
         }
