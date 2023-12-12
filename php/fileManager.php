@@ -36,7 +36,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         if (file_exists("../uploads/$direct/" . $_SESSION['nameAndType']) && $chunkData->currentChunk == 0) {
             header('Content-Type: application/json');
-            exit(json_encode(['status' => false, 'message' => 'The file exists, do you want to replace it?'
+            exit(json_encode(['status' => false, 'message' => 'The file exists, do you want to replace ' . $_SESSION['nameAndType'] . '?'
                 ]
             ));
         }

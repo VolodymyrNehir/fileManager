@@ -83,8 +83,8 @@ $(document).on('submit', '.formAddFile', function (event) {
                 success: function (response) {
 
                     if (response?.status == false) {
-                        if (response?.message == 'The file exists, do you want to replace it?') {
-                            error.css('display', 'block').text('The file exists, do you want to replace it?');
+                        if (response.message ) {
+                            error.css('display', 'block').text(response.message);
                             $('.addFile').hide();
                             formInpuFile.hide();
                             formAddFile.show();
