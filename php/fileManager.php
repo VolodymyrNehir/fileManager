@@ -9,8 +9,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $typesFile = ['application/zip', 'image/jpeg', 'image/jpg', 'image/gif'];
         $finfo = new finfo(FILEINFO_MIME_TYPE);
         $typeFile = $finfo->file($_FILES['file']['tmp_name']);
-        $nameAndType = substr_replace(basename($name), '', strrpos(basename($name), '.')) . '.' . substr($typeFile, strpos($typeFile, '/') + 1);
-        session_start();
+
 
 
         if ($chunkData->currentChunk == 0) {
@@ -20,7 +19,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     unlink('../temporarilyLoaded/' . $file);
                 }
             }
-            $_SESSION['nameAndType'] = $nameAndType;
 
         }
         if ($chunkData->currentChunk == 0) {
@@ -34,9 +32,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
         }
 
-        if (file_exists("../uploads/$direct/" . $_SESSION['nameAndType']) && $chunkData->currentChunk == 0) {
+        if (file_exists("../uploads/$direct/" . basename($name)) && $chunkData->currentChunk == 0) {
             header('Content-Type: application/json');
-            exit(json_encode(['status' => false, 'message' => 'The file exists, do you want to replace ' . $_SESSION['nameAndType'] . '?'
+            exit(json_encode(['status' => false, 'message' => 'The file exists, do you want to replace ' . basename($name) . '?'
                 ]
             ));
         }
@@ -50,31 +48,31 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
 
-        fopen($_SESSION['filePath'], 'ab');
-        $filePath = $uploadDirectory . '/' . $_SESSION['nameAndType'];
+
+        $filePath = $uploadDirectory . '/' . basename($name);
 
 
-        if (file_exists("../uploads/$direct/" . $_SESSION['nameAndType']) && $chunkData->currentChunk == 1) {
-            file_put_contents('../temporarilyLoaded/' . $_SESSION['nameAndType'], $chunk);
-        } else if (!file_exists("../uploads/$direct/" . $_SESSION['nameAndType']) && $chunkData->currentChunk == 1) {
-            file_put_contents('../temporarilyLoaded/' . $_SESSION['nameAndType'], $chunk);
+        fopen("../temporarilyLoaded/" . basename($name), 'ab');
+
+        if (file_exists("../uploads/$direct/" . basename($name)) && $chunkData->currentChunk == 1) {
+            file_put_contents('../temporarilyLoaded/' . basename($name), $chunk);
+        } else if (!file_exists("../uploads/$direct/" . basename($name)) && $chunkData->currentChunk == 1) {
+            file_put_contents('../temporarilyLoaded/' . basename($name), $chunk);
         } else if ($chunkData->currentChunk >= 1) {
 
-            file_put_contents('../temporarilyLoaded/' . $_SESSION['nameAndType'], $chunk, FILE_APPEND);
+            file_put_contents('../temporarilyLoaded/' . basename($name), $chunk, FILE_APPEND);
         }
 
 
         if ($chunkData->currentChunk == $chunkData->totalChunks) {
             fopen($filePath, 'ab');
-
-            copy(('../temporarilyLoaded/' . $_SESSION['nameAndType']), ("../uploads/$direct/" . $_SESSION['nameAndType']));
-            unlink('../temporarilyLoaded/' . $_SESSION['nameAndType']);
-            unset($_SESSION['filePath']);
+            copy(('../temporarilyLoaded/' . basename($name)), ("../uploads/$direct/" . basename($name)));
+            unlink('../temporarilyLoaded/' . basename($name));
             header('Content-Type: application/json');
             echo json_encode(['status' => true, 'message' => 'File uploaded successfully'
                 ]
             );
-            fclose("../uploads/$direct/" . $_SESSION['nameAndType']);
+            fclose("../uploads/$direct/" . basename($name));
 
         }
 

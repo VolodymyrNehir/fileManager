@@ -48,7 +48,7 @@ $(document).on('submit', '.formAddFile', function (event) {
             let formData = new FormData();
             progres.css('display', 'flex');
             formData.append("direction", directId);
-            formData.append("fileType", form.type);
+            // formData.append("fileType", form.type);
             formData.append('file', chunk);
             formData.append('name', form.name);
             formData.append('chunkData', JSON.stringify({currentChunk, totalChunks}));
