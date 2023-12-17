@@ -40,16 +40,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
         $chunk = file_get_contents($_FILES['file']['tmp_name']);
 
-        $uploadDirectory = "../uploads/$direct";
+//        $uploadDirectory = "../uploads/$direct";
+//
+//
+//        if (!is_dir($uploadDirectory)) {
+//            mkdir($uploadDirectory, 0755, true);
+//        }
 
 
-        if (!is_dir($uploadDirectory)) {
-            mkdir($uploadDirectory, 0755, true);
-        }
 
-
-
-        $filePath = $uploadDirectory . '/' . basename($name);
+        $filePath = "../uploads/$direct" . '/' . basename($name);
 
 
         fopen("../temporarilyLoaded/" . basename($name), 'ab');
