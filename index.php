@@ -15,39 +15,23 @@
 <div class="container-fluid ">
     <div class="row">
         <div class="folderList col-md-3">
-
-            <div class="container folder">
-                <div id="1">
+            <?php
+            $dir = 'uploads';
+                $handle = opendir($dir);
+            while (($folder = readdir($handle)) !== false) {
+                if ($folder !== '.' &&  $folder !== '..' && $folder !== '.DS_Store'  && is_dir("uploads/$folder")) {?>
+                     <div class="container folder">
+                <div id="<?php echo $folder ?>">
                     <i class="bi bi-folder2-open"></i>
-                    <span>file1</span>
+                    <span><?php echo $folder?></span>
                     <button class="btnAdd m-2 btnIcon" data-bs-toggle="modal" data-bs-target="#exampleModal"><i
                                 class="bi bi-plus-circle-fill"></i></button>
                 </div>
             </div>
-            <div class="container folder">
-                <div id="2">
-                    <i class="bi bi-folder2-open"></i>
-                    <span>file2</span>
-                    <button class="btnAdd m-2 btnIcon" data-bs-toggle="modal" data-bs-target="#exampleModal"><i
-                                class="bi bi-plus-circle-fill"></i></button>
-                </div>
-            </div>
-            <div class="container folder">
-                <div id="3">
-                    <i class="bi bi-folder2-open"></i>
-                    <span>file3</span>
-                    <button class="btnAdd m-2 btnIcon" data-bs-toggle="modal" data-bs-target="#exampleModal"><i
-                                class="bi bi-plus-circle-fill"></i></button>
-                </div>
-            </div>
-            <div class="container folder">
-                <div id="4">
-                    <i class="bi bi-folder2-open"></i>
-                    <span>file4</span>
-                    <button class="btnAdd m-2 btnIcon" data-bs-toggle="modal" data-bs-target="#exampleModal"><i
-                                class="bi bi-plus-circle-fill"></i></button>
-                </div>
-            </div>
+               <?php  }
+            }
+            closedir($dir);
+            ?>
 
         </div>
         <div class="container col-md-9">
